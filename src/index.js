@@ -261,7 +261,7 @@
           const elemRect = this.$el.getBoundingClientRect()
           offset = scrollelementRect.top - elemRect.top
         } else {
-          offset = (vsl.$el || vsl).scrollTop || 0
+          offset = (vsl && (vsl.$el || vsl).scrollTop) || 0
         }
 
         delta.direction = offset > delta.scrollTop ? 'D' : 'U'
@@ -332,7 +332,7 @@
 
       // return the right zone info based on `start/index`.
       getZone (index) {
-        let start
+        let start, end
         const delta = this.delta
 
         index = parseInt(index, 10)
@@ -346,9 +346,13 @@
         } else {
           start = index
         }
+        end = start + delta.keeps - 1
+        if (delta.total && end > delta.total) {
+          end = delta.total - 1
+        }
 
         return {
-          end: start + delta.keeps - 1,
+          end,
           start,
           isLast
         }
